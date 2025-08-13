@@ -110,7 +110,7 @@ export default function Blocktionary() {
   return (
     <div className="max-w-2xl mx-auto p-6 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 min-h-screen text-white">
       <header className="text-center mb-8">
-        <h1 className="text-6xl font-bold mb-3">📚 Blocktionary</h1>
+        <h1 className="text-6xl font-bold mb-3">🧱Blocktionary</h1>
         <p className="text-xl mb-6 opacity-90">Master Blockchain Terminology Through Interactive Learning</p>
         <div className="bg-white/20 p-4 rounded-xl backdrop-blur-sm">
           <div className="text-lg font-semibold">
