@@ -1,7 +1,7 @@
 [build]
   base = "blocktionary-app"
-  command = "npm run build"
-  publish = "blocktionary-app/.next"
+  command = "npm install && npm run build"
+  publish = ".next"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
