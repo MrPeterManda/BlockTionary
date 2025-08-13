@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { blockchainQuestions, type Question } from '../data/questions';
+import { blockchainQuestions} from '../data/questions';
 
 export default function Blocktionary() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
