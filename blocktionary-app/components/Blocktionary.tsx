@@ -71,8 +71,8 @@ export default function Blocktionary() {
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-6 text-white">
       <div className="max-w-2xl mx-auto">
         <div className="flex justify-center gap-4 mb-6">
-          <button onClick={() => setSource('local')} className={`${source==='local'?'underline font-bold':''}`}>Local</button>
-          <button onClick={() => setSource('gpt')} className={`${source==='gpt'?'underline font-bold':''}`}>GPT-Generated</button>
+          <button onClick={() => setSource('local')} className={`${source==='local'?'underline font-bold':''}`}>Curated Quiz</button>
+          <button onClick={() => setSource('gpt')} className={`${source==='gpt'?'underline font-bold':''}`}>Live Llama 3 Quiz</button>
         </div>
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6">
           <h3 className="text-xl font-semibold mb-4">Question {idx+1} of {questions.length}</h3>
