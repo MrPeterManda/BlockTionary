@@ -125,6 +125,6 @@ MIT
 
 ***
 
-> Blocktionary: Learn. Play. Earn. On-chain—whenever...!
+> Blocktionary: Learn. Play. Earn. On-chain. Stay Based.
 
 ***
