@@ -180,7 +180,7 @@ export default function Blocktionary() {
           <div className="flex flex-col sm:flex-row gap-2">
             <input 
               type="text" 
-              className="w-full sm:flex-1 p-4 rounded-lg"
+              className="w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your answer"
               value={userAnswer}
               onChange={e => setUserAnswer(e.target.value)}
