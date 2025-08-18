@@ -177,23 +177,25 @@ export default function Blocktionary() {
           )}
         </div>
         {!showDefinition && (
-          <div className="flex gap-4">
-            <input
-              type="text"
+          <div className="flex flex-col sm:flex-row gap-2">
+            <input 
+              type="text" 
+              className="w-full sm:flex-1 p-4 rounded-lg"
+              placeholder="Enter your answer"
               value={userAnswer}
               onChange={e => setUserAnswer(e.target.value)}
-              placeholder="Enter the blockchain term..."
-              className="flex-1 p-4 rounded-xl bg-white text-black placeholder-gray-500 text-lg"
               onKeyDown={e => e.key === 'Enter' && userAnswer.trim() && handleSubmitAnswer()}
             />
-            <button
+
+            <button 
+              className="w-full sm:w-auto bg-green-500 hover:bg-green-600 p-4 rounded-lg text-white font-semibold disabled:opacity-50"
               onClick={handleSubmitAnswer}
               disabled={!userAnswer.trim()}
-              className="bg-green-500 hover:bg-green-600 disabled:bg-gray-500 px-8 py-4 rounded-xl font-semibold"
             >
               Submit
             </button>
           </div>
+
         )}
         {/* Dummy blockchain/web3 section */}
         <div className="mt-8 text-center">
