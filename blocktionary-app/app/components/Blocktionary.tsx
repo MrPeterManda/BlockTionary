@@ -3,6 +3,9 @@
 import React, { useState } from 'react';
 import { blockchainQuestions, type Question } from '../../data/questions';
 
+// This flag checks for the API key; Base/web3 features are "off" in dummy mode.
+const BASE_ENABLED = !!process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY;
+
 export default function Blocktionary() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
@@ -11,13 +14,13 @@ export default function Blocktionary() {
   const [showDefinition, setShowDefinition] = useState(false);
   const [gameCompleted, setGameCompleted] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState<string[]>([]);
-  const [wrongAnswers, setWrongAnswers] = useState<{term: string, userAnswer: string}[]>([]);
-  
+  const [wrongAnswers, setWrongAnswers] = useState<{ term: string; userAnswer: string }[]>([]);
+
   const currentQ = blockchainQuestions[currentQuestion];
 
   const handleSubmitAnswer = () => {
     const isCorrect = userAnswer.toLowerCase().trim() === currentQ.term.toLowerCase();
-    
+
     if (isCorrect) {
       setScore(score + 1);
       setCorrectAnswers([...correctAnswers, currentQ.term]);
@@ -26,7 +29,7 @@ export default function Blocktionary() {
     }
 
     setShowDefinition(true);
-    
+
     setTimeout(() => {
       if (currentQuestion < blockchainQuestions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
@@ -59,10 +62,27 @@ export default function Blocktionary() {
           <div className="text-3xl mb-6">
             Final Score: {score}/{blockchainQuestions.length} ({percentage}%)
           </div>
-          
-          <button 
+
+          {/* --- Blockchain Rewards Section (Dummy/Demo Mode) --- */}
+          <div className="mt-8">
+            {BASE_ENABLED ? (
+              <button className="bg-indigo-500 hover:bg-indigo-600 px-8 py-3 rounded-xl font-semibold">
+                Claim Blockchain Rewards
+              </button>
+            ) : (
+              <button
+                className="bg-gray-400 px-8 py-3 rounded-xl text-white opacity-60 cursor-not-allowed font-semibold"
+                disabled
+                title="Connect to Base to claim rewards!"
+              >
+                🚀 Base Rewards Coming Soon!
+              </button>
+            )}
+          </div>
+
+          <button
             onClick={resetGame}
-            className="bg-blue-500 hover:bg-blue-600 px-8 py-3 rounded-xl font-semibold"
+            className="bg-blue-500 hover:bg-blue-600 px-8 py-3 rounded-xl font-semibold mt-8"
           >
             Play Again
           </button>
@@ -82,7 +102,7 @@ export default function Blocktionary() {
 
       <div className="bg-white/10 rounded-3xl p-8 mb-6">
         <h3 className="text-2xl font-semibold mb-6">What blockchain term matches this description?</h3>
-        
+
         <div className="bg-white/15 p-6 rounded-xl mb-6">
           <p className="text-lg">{currentQ.definition}</p>
         </div>
@@ -95,7 +115,7 @@ export default function Blocktionary() {
         )}
 
         {!showHint && (
-          <button 
+          <button
             onClick={() => setShowHint(true)}
             className="w-full bg-orange-500 hover:bg-orange-600 py-3 px-6 rounded-xl font-semibold mb-6"
           >
@@ -106,7 +126,9 @@ export default function Blocktionary() {
         {showDefinition && (
           <div className="bg-green-500/20 p-6 rounded-xl mb-6">
             <h4 className="font-semibold mb-3">✅ Answer: {currentQ.term}</h4>
-            <p><strong>Explanation:</strong> {currentQ.hint}</p>
+            <p>
+              <strong>Explanation:</strong> {currentQ.hint}
+            </p>
           </div>
         )}
       </div>
@@ -116,12 +138,12 @@ export default function Blocktionary() {
           <input
             type="text"
             value={userAnswer}
-            onChange={(e) => setUserAnswer(e.target.value)}
+            onChange={e => setUserAnswer(e.target.value)}
             placeholder="Enter the blockchain term..."
             className="flex-1 p-4 rounded-xl bg-white text-black placeholder-gray-500 text-lg"
-            onKeyPress={(e) => e.key === 'Enter' && userAnswer.trim() && handleSubmitAnswer()}
+            onKeyPress={e => e.key === 'Enter' && userAnswer.trim() && handleSubmitAnswer()}
           />
-          <button 
+          <button
             onClick={handleSubmitAnswer}
             disabled={!userAnswer.trim()}
             className="bg-green-500 hover:bg-green-600 disabled:bg-gray-500 px-8 py-4 rounded-xl font-semibold"
@@ -130,6 +152,23 @@ export default function Blocktionary() {
           </button>
         </div>
       )}
+
+      {/* --- Blockchain Connect/Feature Section (Dummy/Demo Mode) --- */}
+      <div className="mt-8 text-center">
+        {BASE_ENABLED ? (
+          <button className="bg-indigo-500 hover:bg-indigo-600 px-8 py-3 rounded-xl font-semibold">
+            Connect to Base
+          </button>
+        ) : (
+          <button
+            className="bg-gray-400 px-8 py-3 rounded-xl text-white opacity-60 cursor-not-allowed font-semibold"
+            disabled
+            title="Base integration coming soon"
+          >
+            🪐 Blockchain Features Coming Soon!
+          </button>
+        )}
+      </div>
     </div>
   );
 }
