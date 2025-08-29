@@ -1,8 +1,3 @@
-import {
-  setUserNotificationDetails,
-  deleteUserNotificationDetails,
-} from "@/lib/notification";
-import { sendFrameNotification } from "@/lib/notification-client";
 import { http } from "viem";
 import { createPublicClient } from "viem";
 import { optimism } from "viem/chains";
@@ -79,45 +74,17 @@ export async function POST(request: Request) {
 
   switch (event.event) {
     case "frame_added":
-      console.log(
-        "frame_added",
-        "event.notificationDetails",
-        event.notificationDetails,
-      );
-      if (event.notificationDetails) {
-        await setUserNotificationDetails(fid, event.notificationDetails);
-        await sendFrameNotification({
-          fid,
-          title: `Welcome to ${appName}`,
-          body: `Thank you for adding ${appName}`,
-        });
-      } else {
-        await deleteUserNotificationDetails(fid);
-      }
-
+      console.log("frame_added event received (notifications disabled)");
       break;
-    case "frame_removed": {
-      console.log("frame_removed");
-      await deleteUserNotificationDetails(fid);
+    case "frame_removed":
+      console.log("frame_removed event received (notifications disabled)");
       break;
-    }
-    case "notifications_enabled": {
-      console.log("notifications_enabled", event.notificationDetails);
-      await setUserNotificationDetails(fid, event.notificationDetails);
-      await sendFrameNotification({
-        fid,
-        title: `Welcome to ${appName}`,
-        body: `Thank you for enabling notifications for ${appName}`,
-      });
-
+    case "notifications_enabled":
+      console.log("notifications_enabled event received (notifications disabled)");
       break;
-    }
-    case "notifications_disabled": {
-      console.log("notifications_disabled");
-      await deleteUserNotificationDetails(fid);
-
+    case "notifications_disabled":
+      console.log("notifications_disabled event received (notifications disabled)");
       break;
-    }
   }
 
   return Response.json({ success: true });
