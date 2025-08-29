@@ -1,29 +1,34 @@
 {
+  "accountAssociation": {
+    "header": "eyJmaWQiOjExODMzMjAsInR5cGUiOiJhdXRoIiwia2V5IjoiMHhhMTg3OGE5NTQ3NjkxMjMyMDk3NmZDZDVmNWE4MTY0M2Q4OGFDMjYzIn0",
+    "payload": "eyJkb21haW4iOiJibG9ja3Rpb25hcnktYXBwLnZlcmNlbC5hcHAifQ",
+    "signature": "8+MYfbSgciliEZ0kq+FrbvArJ4hKNPsaLEZpxX14YrNBlVIh9yJ+98lgBFJpnbun+TybJWKv8yli1K0kBBvzkxs="
+  },
   "miniapp": {
     "version": "1",
     "name": "Blocktionary",
     "iconUrl": "https://blocktionary-app.vercel.app/icon.png",
-    "heroImageUrl": "https://blocktionary-app.vercel.app/hero.png",
-    "screenshotUrls": ["https://blocktionary-app.vercel.app/screenshot.png"],
-    "splashBackgroundColor": "#2C3E50",
-    "subtitle": "Master blockchain terminology",
-    "description": "The essential dictionary for Web3 builders. Learn key blockchain concepts through interactive quizzes and flashcards designed for all skill levels.",
-    "primaryCategory": "education",
-    "screenshotUrls": ["https://blocktionary-app.vercel.app/screenshot.png"],
-    "imageUrl": "https://blocktionary-app.vercel.app/logo.png",
-    "heroImageUrl": "https://blocktionary-app.vercel.app/logo.png",
-    "splashImageUrl": "https://blocktionary-app.vercel.app/splash.png",
-    "splashBackgroundColor": "#1A1B20",
-    "tags": ["blockchain", "education", "web3", "base", "learning"],
-    "tagline": "Airdrops to ZKP",
-    "buttonTitle": "Start Learning",
-    "ogTitle": "Gamified Web3 Glossary",
-    "ogDescription": "Decode blockchain jargon with interactive learning on Base network",
-    "ogImageUrl": "https://blocktionary-app.vercel.app/logo.png",
-    "castShareUrl": "https://warpcast.com/~/compose?text=Check+out+Blocktionary+-+the+Web3+glossary+I'm+using+to+learn+blockchain+terms",
     "homeUrl": "https://blocktionary-app.vercel.app",
-    "webhookUrl": "https://blocktionary-app.vercel.app/api/webhook",
-    "requiredChains": ["eip155:8453"],
+    "splashImageUrl": "https://blocktionary-app.vercel.app/splash.png",
+    "splashBackgroundColor": "#1e40af",
+    "subtitle": "Learn Blockchain Terms",
+    "description": "Master blockchain terminology through interactive learning on Base network",
+    "primaryCategory": "education",
+    "tags": [
+      "blockchain",
+      "education",
+      "web3",
+      "base",
+      "learning"
+    ],
+    "heroImageUrl": "https://blocktionary-app.vercel.app/hero.png",
+    "tagline": "Learn. Play. Earn. On Base.",
+    "ogTitle": "Learn Blockchain Terminology",
+    "ogDescription": "Master blockchain terminology through interactive learning",
+    "ogImageUrl": "https://blocktionary-app.vercel.app/og-image.png",
+    "requiredChains": [
+      "eip155:8453"
+    ],
     "requiredCapabilities": [
       "actions.signIn",
       "wallet.getEthereumProvider"
