@@ -1,4 +1,8 @@
-# MiniKit Template
+# Blocktionary
+
+🚀 Live Sites:
+- Vercel: [https://blocktionary-app.vercel.app](https://blocktionary-app.vercel.app)
+- Netlify: [https://blocktionary.netlify.app](https://blocktionary.netlify.app)
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-onchain --mini`](), configured with:
 
@@ -7,8 +11,18 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-oncha
 - [Tailwind CSS](https://tailwindcss.com)
 - [Next.js](https://nextjs.org/docs)
 
-## Getting Started
+## Quick Start Guide
 
+### Using Make Commands
+For fastest setup, use these Make commands:
+```bash
+make setup   # Complete project setup (Node.js, deps, build, run)
+make dev     # Start development server
+make deploy  # Build and deploy to Vercel
+make restart # Quick restart of development server
+```
+
+### Manual Setup
 1. Install dependencies:
 ```bash
 npm install
