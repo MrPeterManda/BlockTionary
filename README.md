@@ -40,7 +40,7 @@ Blocktionary offers an interactive way to learn blockchain terms:
 
 1. **Clone and install**
     ```bash
-    git clone https://github.com/your-username/blocktionary.git
+    git clone git@github.com:MrPeterManda/BlockTionary.git
     cd blocktionary-app
     npm install
     ```
