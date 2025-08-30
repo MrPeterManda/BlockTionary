@@ -75,3 +75,4 @@ restart:
 	@pkill -f "next dev" || true
 	@sleep 2
 	@make dev
+	
