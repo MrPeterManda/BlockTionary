@@ -35,7 +35,7 @@ install: check-node
 dev:
 	@echo "🚀 Starting development server..."
 	@echo "Opening http://localhost:3000"
-	@npm run dev
+	@PORT=3000 npm run dev
 
 # Build for production
 build:
