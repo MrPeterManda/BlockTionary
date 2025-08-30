@@ -43,9 +43,10 @@ build:
 	@npm run build
 
 # Deploy to Vercel
-deploy: build
-	@echo "🌐 Deploying to Vercel..."
-	@npx vercel --prod
+deploy:
+	@echo "🚀 Deploying to Vercel..."
+	@./scripts/deploy.sh
+	@echo "✅ Deployment complete"
 
 # Clean build artifacts
 clean:
@@ -75,4 +76,3 @@ restart:
 	@pkill -f "next dev" || true
 	@sleep 2
 	@make dev
-	

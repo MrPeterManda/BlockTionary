@@ -30,9 +30,20 @@ Blocktionary offers an interactive way to learn blockchain terms:
 
 ***
 
-## Live Site
+## Live Sites
 
-[https://blocktionary.netlify.app/](https://blocktionary.netlify.app/)
+- Vercel (primary): [https://blocktionary.vercel.app/](https://blocktionary.vercel.app/)
+- Netlify (legacy): [https://blocktionary.netlify.app/](https://blocktionary.netlify.app/)
+
+## Deployment
+
+### Vercel Deployment
+1. Push your changes to GitHub
+2. Vercel will automatically build and deploy on each push
+3. The Vercel dashboard will show deployment status and logs
+
+### Netlify Deployment (legacy)
+The Netlify site will remain accessible at its current URL but won't receive updates.
 
 ***
 
