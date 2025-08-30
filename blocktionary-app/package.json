@@ -11,7 +11,7 @@
     "quick-start": "./setup.sh"
   },
   "dependencies": {
-    "@farcaster/frame-sdk": "^0.0.64",
+    "@farcaster/miniapp-sdk": "^0.0.64",
     "@upstash/redis": "^1.35.3",
     "autoprefixer": "^10.4.21",
     "groq-sdk": "^0.30.0",

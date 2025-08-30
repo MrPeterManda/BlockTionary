@@ -2,11 +2,21 @@
 
 import React, { useState } from 'react';
 import { blockchainQuestions, type Question } from '../../data/questions';
+import { useAccount, useConnect } from 'wagmi';
+import { injected } from 'wagmi/connectors';
 
 // This flag checks for the API key; Base/web3 features are "off" in dummy mode.
 const BASE_ENABLED = !!process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY;
 
 export default function Blocktionary() {
+  const { connect } = useConnect();
+  const { isConnected } = useAccount();
+  
+  const handleClaimRewards = () => {
+    // Implement reward claiming logic here
+    console.log('Claiming blockchain rewards');
+  };
+  
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
   const [score, setScore] = useState(0);
@@ -66,8 +76,11 @@ export default function Blocktionary() {
           {/* --- Blockchain Rewards Section (Dummy/Demo Mode) --- */}
           <div className="mt-8">
             {BASE_ENABLED ? (
-              <button className="bg-indigo-500 hover:bg-indigo-600 px-8 py-3 rounded-xl font-semibold">
-                Claim Blockchain Rewards
+              <button 
+                className="bg-indigo-500 hover:bg-indigo-600 px-8 py-3 rounded-xl font-semibold"
+                onClick={() => connect({ connector: injected({ target: 'metaMask' }) })}
+              >
+                {isConnected ? 'Claim Blockchain Rewards' : 'Connect MetaMask'}
               </button>
             ) : (
               <button
@@ -153,12 +166,29 @@ export default function Blocktionary() {
         </div>
       )}
 
-      {/* --- Blockchain Connect/Feature Section (Dummy/Demo Mode) --- */}
-      <div className="mt-8 text-center">
+      {/* Wallet connection section - Always shown below input */}
+      <div className="mt-4 text-center">
         {BASE_ENABLED ? (
-          <button className="bg-indigo-500 hover:bg-indigo-600 px-8 py-3 rounded-xl font-semibold">
-            Connect to Base
-          </button>
+          isConnected ? (
+            <div>
+              <p className="mb-2">Wallet Connected</p>
+              {score >= blockchainQuestions.length / 2 && (
+                <button 
+                  className="bg-indigo-500 hover:bg-indigo-600 px-8 py-3 rounded-xl font-semibold"
+                  onClick={handleClaimRewards}
+                >
+                  Claim Blockchain Rewards
+                </button>
+              )}
+            </div>
+          ) : (
+            <button 
+              className="bg-indigo-500 hover:bg-indigo-600 px-8 py-3 rounded-xl font-semibold"
+              onClick={() => connect({ connector: injected({ target: 'metaMask' }) })}
+            >
+              Connect Wallet
+            </button>
+          )
         ) : (
           <button
             className="bg-gray-400 px-8 py-3 rounded-xl text-white opacity-60 cursor-not-allowed font-semibold"

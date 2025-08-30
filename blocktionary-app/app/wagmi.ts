@@ -7,10 +7,11 @@ export function getConfig() {
   return createConfig({
     chains: [base, baseSepolia],
     connectors: [
-      injected(),
+      injected({
+        target: 'metaMask',
+      }),
       coinbaseWallet({
         appName: 'Blocktionary',
-        preference: 'smartWalletOnly',
       }),
     ],
     storage: createStorage({
