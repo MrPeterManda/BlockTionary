@@ -5,15 +5,13 @@
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/next"
+      "use": "@vercel/next",
+      "config": {
+        "distDir": ".next"
+      }
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/app/page.tsx"
-    }
-  ],
+  "routes": [],
   "env": {
     "NEXT_PUBLIC_ONCHAINKIT_API_KEY": "62ubpXWQAMM9jJB8ylNDD5juuzSb5Sn0",
     "NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME": "blocktionary"
