@@ -41,12 +41,12 @@ Blocktionary offers an interactive way to learn blockchain terms:
 1. **Clone and install**
     ```bash
     git clone git@github.com:MrPeterManda/BlockTionary.git
-    cd blocktionary-app
+    cd BlockTionary/base-mini-app/blocktionary_
     npm install
     ```
 
 2. **Set environment variables**  
-   Create a file called `.env` at the root of `blocktionary-app` with your required keys (for AI features, etc):
+   Create a file called `.env` at the root of `base-mini-app/blocktionary_` with your required keys (for AI features, etc):
 
     ```
     GROQ_API_KEY=your_groq_api_key

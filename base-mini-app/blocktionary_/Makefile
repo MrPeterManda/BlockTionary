@@ -45,7 +45,7 @@ build:
 # Deploy to Vercel
 deploy: build
 	@echo "🌐 Deploying to Vercel..."
-	@./scripts/deploy.sh
+	@npx vercel --prod
 
 # Clean build artifacts
 clean:
