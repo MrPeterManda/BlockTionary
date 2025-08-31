@@ -1,0 +1,11 @@
+[profile.default]
+src = 'contracts'
+out = 'out'
+libs = ['lib']
+test = 'test'
+
+[fmt]
+line_length = 80
+
+[rpc_endpoints]
+base = "https://mainnet.base.org"

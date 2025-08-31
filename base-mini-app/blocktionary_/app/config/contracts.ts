@@ -3,8 +3,8 @@ import { Address } from 'viem';
 export const CONTRACT_ADDRESSES = {
   // Mainnet
   base: {
-    scoring: '0x...' as Address, // Replace with actual scoring contract
-    nftRewards: '0x...' as Address, // Replace with actual NFT contract
+    scoring: '0x2E86B1483387cA7496f18674094DdA867e88f13f' as Address,
+    nftRewards: '0x...' as Address, // Will be replaced after deployment
     tipping: '0x...' as Address, // Replace with actual tipping contract
   },
   // Testnet

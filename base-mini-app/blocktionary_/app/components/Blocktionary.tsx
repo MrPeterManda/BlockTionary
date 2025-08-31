@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { blockchainQuestions, type Question } from '../../data/questions';
-import { CONTRACT_ADDRESSES, NFT_METADATA, TIP_AMOUNTS } from '../config/contracts';
+import { CONTRACT_ADDRESSES } from '../config/contracts';
 import { useAccount, useConnect, useWriteContract } from 'wagmi';
 
-// This flag checks for the API key; Base/web3 features are "off" in dummy mode.
-const BASE_ENABLED = !!process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY;
+// Enable blockchain features since wallet connection and contract interaction are working
+const BASE_ENABLED = true;
 
 type QuizMode = 'curated' | 'llama3';
 
@@ -24,51 +24,154 @@ export default function Blocktionary() {
   const [isLoading, setIsLoading] = useState(false);
   
   const { address, isConnected, connector } = useAccount();
+  
+  useEffect(() => {
+    if (isConnected) {
+      console.log('Wallet connected:', address);
+    } else {
+      console.log('Wallet disconnected');
+    }
+  }, [isConnected, address]);
   const { connect, connectors, isPending: isConnecting } = useConnect();
+  
+  // Track total users with robust error handling and fallback
+  const [displayUserCount, setDisplayUserCount] = useState<string>('0');
+  
+  const { writeContract: mintNFT } = useWriteContract({
+    mutation: {
+      onSuccess: (data: unknown) => {
+        console.log('NFT minted successfully:', data);
+        trackCompletedWallet();
+      },
+      onError: (error: Error) => {
+        console.error('NFT minting failed:', error);
+      }
+    }
+  });
+
+  const { writeContract: recordScore } = useWriteContract({
+    mutation: {
+      onSuccess: (data: unknown) => {
+        console.log('Score recorded successfully:', data);
+        trackCompletedWallet();
+      },
+      onError: (error: Error) => {
+        console.error('Score recording failed:', error);
+      }
+    }
+  });
+
+  // Remove unused transaction status tracking
+  // const [txStatus, setTxStatus] = useState<'idle' | 'pending' | 'success' | 'error'>('idle');
+
+  // Track both connected wallets and those who complete the game
+  const [connectedWallets, setConnectedWallets] = useState<Set<string>>(new Set());
+  const [completedWallets, setCompletedWallets] = useState<Set<string>>(new Set());
+
+  const { writeContract } = useWriteContract();
+  
+  // Update connected wallets when address changes
+  useEffect(() => {
+    if (address) {
+      setConnectedWallets(prev => new Set(prev).add(address));
+      // Record wallet connection on-chain
+      writeContract({
+        address: CONTRACT_ADDRESSES.base.scoring,
+        abi: [
+          {
+            "inputs": [{"internalType":"address","name":"user","type":"address"}],
+            "name":"incrementScore",
+            "outputs": [],
+            "stateMutability":"nonpayable",
+            "type":"function"
+          }
+        ],
+        functionName: 'incrementScore',
+        args: [address],
+        gas: BigInt(500000)
+      });
+    }
+  }, [address, writeContract]);
+
+  // Track when a wallet completes the game and claims rewards
+  const trackCompletedWallet = useCallback(() => {
+    if (address) {
+      setCompletedWallets(prev => new Set(prev).add(address));
+    }
+  }, [address]);
+
+  // Update display counts
+  useEffect(() => {
+    const connectedCount = connectedWallets.size;
+    const completedCount = completedWallets.size;
+    
+    if (connectedCount === 0) {
+      setDisplayUserCount('Be the first to play!');
+    } else {
+      setDisplayUserCount(`${connectedCount} wallets connected, ${completedCount} completed the game`);
+    }
+  }, [connectedWallets, completedWallets]);
+
+  // Call trackCompletedWallet when rewards are claimed
+
   const currentQ = quizMode === 'llama3' && grokQuestions.length > 0 
     ? grokQuestions[currentQuestion] 
     : blockchainQuestions[currentQuestion];
 
-  const { writeContract: mintNFT, status: mintStatus, error: mintError } = useWriteContract();
-  const { writeContract: recordScore, status: scoreStatus, error: scoreError } = useWriteContract();
-  
-  const mintAchievementNFT = async (nftType: 'beginner' | 'expert') => {
-    if (!address) return;
-    mintNFT({
-      address: CONTRACT_ADDRESSES.base.nftRewards,
-      abi: [
-        {
-          inputs: [{ name: "to", type: "address" }, { name: "tokenId", type: "uint256" }],
-          name: "mint",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function"
-        }
-      ],
-      functionName: 'mint',
-      args: [address, nftType === 'beginner' ? BigInt(1) : BigInt(2)]
-    });
-  };
 
-  const recordScoreOnChain = async (score: number) => {
+
+  const mintCompletionNFT = async () => {
     if (!address) return;
+    // setTxStatus('pending');
     try {
-      await recordScore({
-        address: CONTRACT_ADDRESSES.base.scoring,
+      await mintNFT({
+        address: CONTRACT_ADDRESSES.base.nftRewards,
         abi: [
           {
-            inputs: [{ name: "score", type: "uint256" }],
-            name: "recordScore",
+            inputs: [
+              { name: "to", type: "address" },
+              { name: "amount", type: "uint256" }
+            ],
+            name: "mint",
             outputs: [],
             stateMutability: "nonpayable",
             type: "function"
           }
         ],
-        functionName: 'recordScore',
-        args: [BigInt(score)]
+        functionName: 'mint',
+        args: [address, BigInt(1)], // Always mint 1 token
+        gas: BigInt(300000)
       });
+      // setTxStatus('success');
     } catch (error) {
-      console.error('Error recording score:', error);
+      console.error('NFT minting failed:', error);
+      // setTxStatus('error');
+    }
+  };
+
+  const recordScoreOnChain = async (score: number) => {
+    if (!address) return;
+    // setTxStatus('pending');
+    try {
+      await recordScore({
+        address: CONTRACT_ADDRESSES.base.scoring,
+        abi: [
+          {
+            inputs: [{ name: "user", type: "address" }],
+            name: "incrementScore",
+            outputs: [],
+            stateMutability: "nonpayable",
+            type: "function"
+          }
+        ],
+        functionName: 'incrementScore',
+        args: [address],
+        gas: BigInt(300000)
+      });
+      // setTxStatus('success');
+    } catch (error) {
+      console.error('Score recording failed:', error);
+      // setTxStatus('error');
     }
   };
 
@@ -99,6 +202,7 @@ export default function Blocktionary() {
           setShowDefinition(false);
         } else {
           setGameCompleted(true);
+          mintCompletionNFT(); // Automatically mint completion NFT
         }
         setIsLoading(false);
       }, 3000);
@@ -133,10 +237,14 @@ export default function Blocktionary() {
           body: JSON.stringify({
             model: 'llama3-70b-8192',
             messages: [{
+              role: 'system',
+              content: 'You are a helpful assistant that generates educational content about blockchain technology.'
+            },{
               role: 'user',
-              content: 'Generate 10 random blockchain terms with definitions and hints. Format as JSON array with term, definition and hint fields.'
+              content: 'Generate exactly 10 blockchain terms with definitions and hints. Return ONLY a valid JSON array where each object has exactly these fields: term (string), definition (string), hint (string). Example: [{"term":"Blockchain","definition":"A decentralized digital ledger","hint":"Starts with B"}]'
             }],
-            temperature: 0.7
+            temperature: 0.7,
+            response_format: { type: 'json_object' }
           })
         });
         console.log('GROK API response status:', response.status);
@@ -184,7 +292,8 @@ export default function Blocktionary() {
         }
       } catch (error) {
         console.error('Error fetching questions from GROK:', error);
-        alert(`Failed to fetch questions from GROK: ${error instanceof Error ? error.message : String(error)}`);
+        // Fallback to default questions if GROK API fails
+        setQuizMode('curated');
       } finally {
         setIsLoading(false);
       }
@@ -241,16 +350,16 @@ export default function Blocktionary() {
                   try {
                     setIsLoading(true);
                     await recordScoreOnChain(percentage);
-                    await mintAchievementNFT(percentage >= 90 ? 'expert' : 'beginner');
+                    await mintCompletionNFT();
                   } catch (error) {
                     console.error('Transaction failed:', error);
                   } finally {
                     setIsLoading(false);
                   }
                 }}
-                disabled={mintStatus === 'pending' || scoreStatus === 'pending' || isLoading}
+                disabled={isLoading}
               >
-                {mintStatus === 'pending' || scoreStatus === 'pending' ? 'Processing...' : 'Claim Blockchain Rewards'}
+                {isLoading ? 'Processing...' : 'Claim Blockchain Rewards'}
               </button>
             )}
             {!BASE_ENABLED && (
@@ -279,6 +388,15 @@ export default function Blocktionary() {
     <div className="max-w-2xl mx-auto p-6 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 min-h-screen text-white">
       <header className="text-center mb-8">
         <h1 className="text-6xl font-bold mb-3">📚 Blocktionary</h1>
+        <div className="bg-white/20 p-2 rounded-xl mb-4">
+          {false ? (
+            <span>Loading...</span>
+          ) : (
+            <span>
+              {displayUserCount === '0' ? 'Be the first to play!' : `${displayUserCount} unique wallets have played this game`}
+            </span>
+          )}
+        </div>
         <div className="flex justify-center mb-6">
           <button 
             onClick={() => handleQuizModeChange('curated')} 
@@ -345,7 +463,7 @@ export default function Blocktionary() {
       </div>
 
       {!showDefinition && (
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <input
             type="text"
             value={userAnswer}
@@ -363,7 +481,7 @@ export default function Blocktionary() {
               }
             }}
             disabled={!userAnswer.trim() || isLoading}
-            className="bg-green-500 hover:bg-green-600 disabled:bg-gray-500 px-8 py-4 rounded-xl font-semibold"
+            className="bg-green-500 hover:bg-green-600 disabled:bg-gray-500 px-4 sm:px-8 py-4 rounded-xl font-semibold w-full sm:w-auto"
           >
             {isLoading ? 'Processing...' : 'Submit'}
           </button>
@@ -372,26 +490,16 @@ export default function Blocktionary() {
 
       {/* --- Blockchain Connect Section --- */}
       <div className="mt-8 text-center">
-        {BASE_ENABLED ? (
-          address ? (
-            <div className="bg-green-500/20 px-4 py-2 rounded-xl">
-              Connected: {address.substring(0, 6)}...{address.substring(38)}
-            </div>
-          ) : (
-            <button 
-              className="bg-blue-500 hover:bg-blue-600 px-8 py-3 rounded-xl font-semibold"
-              onClick={() => connect({ connector: connectors[0] })}
-            >
-              Connect to Base
-            </button>
-          )
+        {address ? (
+          <div className="bg-green-500/20 px-4 py-2 rounded-xl">
+            Connected: {address.substring(0, 6)}...{address.substring(38)}
+          </div>
         ) : (
-          <button
-            className="bg-gray-400 px-8 py-3 rounded-xl text-white opacity-60 cursor-not-allowed font-semibold"
-            disabled
-            title="Base integration coming soon"
+          <button 
+            className="bg-blue-500 hover:bg-blue-600 px-8 py-3 rounded-xl font-semibold"
+            onClick={() => connect({ connector: connectors[0] })}
           >
-            🪐 Blockchain Features Coming Soon!
+            Connect to Base
           </button>
         )}
       </div>
